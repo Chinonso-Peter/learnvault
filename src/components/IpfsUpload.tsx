@@ -1,23 +1,40 @@
 import { useId, useRef, useState } from "react"
 import { getIpfsUrl } from "../lib/ipfs"
 
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
 export interface IpfsUploadResult {
 	cid: string
 	gatewayUrl: string
 }
 
 export interface IpfsUploadProps {
+	/** JWT token for the Authorization header. */
 	token: string
+	/** Called when the file is successfully pinned. */
 	onSuccess: (result: IpfsUploadResult) => void
+	/** Optional: restrict which MIME types the file-picker shows. */
 	accept?: string
+	/** Optional label shown on the upload button. */
 	label?: string
+	/** Optional: show a preview after upload (images only). */
 	showPreview?: boolean
 }
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
 const API_BASE =
 	(import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "/api"
 
 const ALLOWED_EXTENSIONS = ".pdf,.png,.jpg,.jpeg,.mp4"
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 
 export function IpfsUpload({
 	token,
@@ -41,6 +58,7 @@ export function IpfsUpload({
 		const file = event.target.files?.[0]
 		if (!file) return
 
+		// Client-side size guard (10 MB) mirrors the server limit.
 		if (file.size > 10 * 1024 * 1024) {
 			setError("File exceeds the 10 MB limit.")
 			return
@@ -73,6 +91,7 @@ export function IpfsUpload({
 			setError(err instanceof Error ? err.message : "Upload failed")
 		} finally {
 			setIsUploading(false)
+			// Reset so the same file can be re-selected if needed.
 			if (inputRef.current) inputRef.current.value = ""
 		}
 	}

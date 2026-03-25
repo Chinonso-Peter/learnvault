@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet } from "react-router-dom"
+import { Outlet, Route, Routes } from "react-router-dom"
 import ComingSoon from "./components/ComingSoon"
 import Footer from "./components/Footer"
 import NavBar from "./components/NavBar"
@@ -7,10 +7,13 @@ import Courses from "./pages/Courses"
 import Credential from "./pages/Credential"
 import Dao from "./pages/Dao"
 import DaoProposals from "./pages/DaoProposals"
+import DaoPropose from "./pages/DaoPropose"
 import Debug from "./pages/Debug"
+import Donor from "./pages/Donor"
 import Home from "./pages/Home"
 import Leaderboard from "./pages/Leaderboard"
 import Learn from "./pages/Learn"
+import LessonView from "./pages/LessonView"
 import NotFound from "./pages/NotFound"
 import Profile from "./pages/Profile"
 import ScholarshipApply from "./pages/ScholarshipApply"
@@ -22,14 +25,21 @@ function App() {
 			<Route element={<AppLayout />}>
 				<Route path="/" element={<Home />} />
 				<Route path="/courses" element={<Courses />} />
+				<Route
+					path="/courses/:courseId/lessons/:lessonId"
+					element={<LessonView />}
+				/>
 				<Route path="/learn" element={<Learn />} />
 				<Route path="/dao" element={<Dao />} />
 				<Route path="/dao/proposals" element={<DaoProposals />} />
+				<Route path="/dao/propose" element={<DaoPropose />} />
 				<Route path="/leaderboard" element={<Leaderboard />} />
 				<Route path="/profile" element={<Profile />} />
+				<Route path="/profile/:walletAddress" element={<Profile />} />
 				<Route path="/scholarships/apply" element={<ScholarshipApply />} />
 				<Route path="/admin" element={<Admin />} />
 				<Route path="/treasury" element={<Treasury />} />
+				<Route path="/donor" element={<Donor />} />
 				<Route path="/credentials/:nftId" element={<Credential />} />
 				<Route
 					path="/dashboard"

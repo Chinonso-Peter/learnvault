@@ -24,6 +24,7 @@ const loadLearnTokenClient = async (): Promise<ContractRecord | null> => {
 
 	try {
 		const mod = (await moduleLoader()) as ContractRecord
+
 		return (mod.default as ContractRecord) ?? mod
 	} catch {
 		return null

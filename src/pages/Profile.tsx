@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
+import { Helmet } from "react-helmet"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
+import { ActivityFeed } from "../components/ActivityFeed"
 import {
 	NoCredentialsEmptyState,
 	ProfileSkeleton,
 } from "../components/SkeletonLoader"
+import { WalletContext } from "../providers/WalletProvider"
 
 const Profile: React.FC = () => {
 	const { t } = useTranslation()
+	const { address: walletAddress } = useContext(WalletContext)
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
@@ -35,6 +39,11 @@ const Profile: React.FC = () => {
 		],
 	}
 
+	const siteUrl = "https://learnvault.app"
+	const coursesCompleted = user.nfts.length
+	const title = `${user.name} — ${user.lrnBalance} · ${coursesCompleted} Course${coursesCompleted !== 1 ? "s" : ""} — LearnVault`
+	const description = `${user.name} has completed ${coursesCompleted} course${coursesCompleted !== 1 ? "s" : ""} and earned ${user.lrnBalance} on LearnVault.`
+
 	if (isLoading) {
 		return (
 			<div className="p-12 max-w-6xl mx-auto text-white animate-in fade-in slide-in-from-bottom-8 duration-1000">
@@ -45,6 +54,18 @@ const Profile: React.FC = () => {
 
 	return (
 		<div className="p-12 max-w-6xl mx-auto text-white animate-in fade-in slide-in-from-bottom-8 duration-1000">
+			<Helmet>
+				<title>{title}</title>
+				<meta property="og:title" content={title} />
+				<meta property="og:description" content={description} />
+				<meta property="og:image" content={`${siteUrl}/og-image.png`} />
+				<meta
+					property="og:url"
+					content={`${siteUrl}/profile/${user.address}`}
+				/>
+				<meta name="twitter:card" content="summary_large_image" />
+			</Helmet>
+
 			<header className="glass-card mb-20 p-12 rounded-[3.5rem] flex flex-col md:flex-row items-center gap-12 relative overflow-hidden group">
 				<div className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/10 blur-[100px] rounded-full -z-10 group-hover:bg-brand-purple/10 transition-colors duration-1000" />
 				<div className="iridescent-border p-1 rounded-full shadow-2xl shadow-brand-cyan/20">
@@ -129,6 +150,8 @@ const Profile: React.FC = () => {
 					</div>
 				)}
 			</section>
+
+			<ActivityFeed address={walletAddress} limit={10} />
 		</div>
 	)
 }
